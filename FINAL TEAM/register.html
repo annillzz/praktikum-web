@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Event - NeoEvent</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-dark px-4 mb-4">
+    <a class="navbar-brand fw-bold" href="index.html">NeoEvent</a>
+  </nav>
+
+  <div class="container">
+    <h2 class="text-center mb-4">Formulir Pendaftaran</h2>
+    <form id="daftarForm" class="card p-4 shadow">
+      <div class="mb-3">
+        <label for="nama" class="form-label">Nama Lengkap</label>
+        <input type="text" class="form-control" id="nama" required />
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" required />
+      </div>
+      <div class="mb-3">
+        <label for="event" class="form-label">Pilih Event</label>
+        <select id="event" class="form-select" required>
+          <option value="">-- Pilih Event --</option>
+          <option value="Music Festival">Music Festival</option>
+          <option value="Seminar Teknologi">Tech Expo</option>
+          <option value="Pameran Seni">Sir Deddy Podcast</option>
+          <option value="Workshop Coding">Workshop Coding</option>
+          <option value="Talkshow Inspiratif">Anime Fest</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="jumlah" class="form-label">Jumlah Tiket</label>
+        <input type="number" class="form-control" id="jumlah" min="1" value="1" required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Total Harga</label>
+        <input type="text" class="form-control" id="totalHarga" readonly />
+      </div>
+      <button type="submit" class="btn btn-primary w-100 animate-btn">Daftar</button>
+    </form>
+  </div>
+
+  <script>
+    // Ambil query event dari URL
+    const params = new URLSearchParams(window.location.search);
+    const eventDariURL = params.get("event");
+    if (eventDariURL) {
+      document.getElementById("event").value = eventDariURL;
+    }
+
+    const hargaPerTiket = 75000;
+
+    const jumlahInput = document.getElementById("jumlah");
+    const totalHargaInput = document.getElementById("totalHarga");
+
+    // Fungsi hitung total harga
+    function updateTotalHarga() {
+      const jumlah = parseInt(jumlahInput.value) || 0;
+      const total = jumlah * hargaPerTiket;
+      totalHargaInput.value = `Rp ${total.toLocaleString("id-ID")}`;
+    }
+
+    jumlahInput.addEventListener("input", updateTotalHarga);
+    updateTotalHarga();
+
+    document.getElementById("daftarForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const nama = document.getElementById("nama").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const event = document.getElementById("event").value;
+      const jumlah = parseInt(document.getElementById("jumlah").value);
+      const total = jumlah * hargaPerTiket;
+
+      if (!nama || !email || !event || jumlah < 1) {
+        alert("Mohon isi semua field dengan benar.");
+        return;
+      }
+
+      const data = {
+        nama,
+        email,
+        event,
+        jumlah,
+        total
+      };
+
+      localStorage.setItem("pendaftaran", JSON.stringify(data));
+      window.location.href = "summary.html";
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
